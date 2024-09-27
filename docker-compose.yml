@@ -1,0 +1,30 @@
+version: '3'
+
+services:
+  # MongoDB service
+  mongo:
+    image: mongo:latest
+    container_name: mongo
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+
+  # Backend + Frontend (Unified app)
+  app:
+    build: .
+    container_name: fullstack-app
+    restart: always
+    ports:
+      - "8000:8000"  # Expose the backend server
+    environment:
+      MONGO_URI: mongodb://mongo:27017/trading-card-db
+    depends_on:
+      - mongo
+
+volumes:
+  mongo-data:
